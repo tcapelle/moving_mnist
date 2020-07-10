@@ -68,9 +68,7 @@ class MovingMNIST:
         return start_y, start_x
 
     def generate_moving_mnist(self, num_digits=2):
-        '''
-        Get random trajectories for the digits and generate a video.
-        '''
+        "Get random trajectories for the digits and generate a video"
         data = np.zeros((self.n_frames_total, self.image_size_, self.image_size_), dtype=np.float32)
         for n in range(num_digits):
             # Trajectory
