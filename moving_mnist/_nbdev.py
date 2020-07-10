@@ -11,7 +11,8 @@ index = {"ROOT_PATH": "00_data.ipynb",
          "ConvGRU_cell": "01_models.conv_rnn.ipynb",
          "TimeDistributed": "01_models.conv_rnn.ipynb",
          "Encoder": "01_models.conv_rnn.ipynb",
-         "UpsampleBlock": "01_models.conv_rnn.ipynb"}
+         "UpsampleBlock": "01_models.conv_rnn.ipynb",
+         "Decoder": "01_models.conv_rnn.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py"]
