@@ -7,9 +7,14 @@ index = {"ROOT_PATH": "00_data.ipynb",
          "load_mnist": "00_data.ipynb",
          "MovingMNIST": "00_data.ipynb",
          "ImageSeq": "00_data.ipynb",
-         "ImageTupleTransform": "00_data.ipynb"}
+         "ImageTupleTransform": "00_data.ipynb",
+         "ConvGRU_cell": "01_models.conv_rnn.ipynb",
+         "TimeDistributed": "01_models.conv_rnn.ipynb",
+         "Encoder": "01_models.conv_rnn.ipynb",
+         "UpsampleBlock": "01_models.conv_rnn.ipynb"}
 
-modules = ["data.py"]
+modules = ["data.py",
+           "models/conv_rnn.py"]
 
 doc_url = "https://tcapelle.github.io/moving_mnist/"
 
