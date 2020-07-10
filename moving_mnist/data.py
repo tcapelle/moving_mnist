@@ -3,6 +3,10 @@
 __all__ = ['ROOT_PATH', 'DATA_PATH', 'load_mnist', 'MovingMNIST', 'ImageSeq', 'ImageTupleTransform']
 
 # Cell
+import gzip
+from fastai2.vision.all import *
+
+# Cell
 ROOT_PATH = Path.cwd().parent
 DATA_PATH = Path.cwd().parent/'data'
 
