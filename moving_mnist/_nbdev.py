@@ -4,7 +4,8 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
 index = {"ROOT_PATH": "00_data.ipynb",
          "DATA_PATH": "00_data.ipynb",
-         "load_mnist": "00_data.ipynb"}
+         "load_mnist": "00_data.ipynb",
+         "MovingMNIST": "00_data.ipynb"}
 
 modules = ["data.py"]
 
