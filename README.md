@@ -174,3 +174,6 @@ show_res(p,k)
 
 ![png](docs/images/output_22_1.png)
 
+
+## Training Example:
+- ConvGRU with attention and blur upsampling: [01_train_example.ipynb](01_train_example.ipynb)
