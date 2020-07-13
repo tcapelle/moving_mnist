@@ -86,7 +86,7 @@ description: "ConvLSTM and ConvGRU cells and models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConvGRU_cell" class="doc_header"><code>class</code> <code>ConvGRU_cell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRU_cell</code>(<strong><code>in_ch</code></strong>, <strong><code>out_ch</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="ConvGRU_cell" class="doc_header"><code>class</code> <code>ConvGRU_cell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L10" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRU_cell</code>(<strong><code>in_ch</code></strong>, <strong><code>out_ch</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -281,7 +281,7 @@ description: "ConvLSTM and ConvGRU cells and models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L54" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="TimeDistributed" class="doc_header"><code>class</code> <code>TimeDistributed</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L55" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TimeDistributed</code>(<strong><code>module</code></strong>, <strong><code>low_mem</code></strong>=<em><code>False</code></em>, <strong><code>tdim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Applies a module over tdim identically for each step</p>
 
@@ -319,7 +319,7 @@ description: "ConvLSTM and ConvGRU cells and models"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L81" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>n_in</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Encoder" class="doc_header"><code>class</code> <code>Encoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L82" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoder</code>(<strong><code>n_in</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -521,7 +521,7 @@ stage:  2
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="UpsampleBlock" class="doc_header"><code>class</code> <code>UpsampleBlock</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L116" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UpsampleBlock</code>(<strong><code>in_ch</code></strong>, <strong><code>out_ch</code></strong>, <strong><code>final_div</code></strong>=<em><code>True</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>) :: <code>Module</code></p>
+<h2 id="UpsampleBlock" class="doc_header"><code>class</code> <code>UpsampleBlock</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L117" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>UpsampleBlock</code>(<strong><code>in_ch</code></strong>, <strong><code>out_ch</code></strong>, <strong><code>final_div</code></strong>=<em><code>True</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>act_cls</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>self_attention</code></strong>=<em><code>False</code></em>, <strong><code>init</code></strong>=<em><code>'kaiming_normal_'</code></em>, <strong><code>norm_type</code></strong>=<em><code>None</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>stride</code></strong>=<em><code>1</code></em>, <strong><code>padding</code></strong>=<em><code>None</code></em>, <strong><code>bias</code></strong>=<em><code>None</code></em>, <strong><code>ndim</code></strong>=<em><code>2</code></em>, <strong><code>bn_1st</code></strong>=<em><code>True</code></em>, <strong><code>transpose</code></strong>=<em><code>False</code></em>, <strong><code>xtra</code></strong>=<em><code>None</code></em>, <strong><code>bias_std</code></strong>=<em><code>0.01</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>A quasi-UNet block, using <code>PixelShuffle_ICNR upsampling</code>.</p>
 
@@ -620,7 +620,7 @@ stage:  2
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Decoder" class="doc_header"><code>class</code> <code>Decoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L137" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Decoder</code>(<strong><code>n_out</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>attn</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Decoder" class="doc_header"><code>class</code> <code>Decoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L138" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Decoder</code>(<strong><code>n_out</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>attn</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -886,9 +886,41 @@ stage:  2
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="SimpleModel" class="doc_header"><code>class</code> <code>SimpleModel</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L175" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SimpleModel</code>(<strong><code>n_in</code></strong>=<em><code>1</code></em>, <strong><code>n_out</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>attn</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>strategy</code></strong>=<em><code>'zero'</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="StackUnstack" class="doc_header"><code>class</code> <code>StackUnstack</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L176" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>StackUnstack</code>(<strong><code>module</code></strong>, <strong><code>dim</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>Stack together inputs, apply module, unstack output</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="SimpleModel" class="doc_header"><code>class</code> <code>SimpleModel</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L189" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>SimpleModel</code>(<strong><code>n_in</code></strong>=<em><code>1</code></em>, <strong><code>n_out</code></strong>=<em><code>1</code></em>, <strong><code>szs</code></strong>=<em><code>[16, 64, 96, 96]</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>rnn_ks</code></strong>=<em><code>5</code></em>, <strong><code>act</code></strong>=<em><code>'ReLU'</code></em>, <strong><code>blur</code></strong>=<em><code>False</code></em>, <strong><code>attn</code></strong>=<em><code>False</code></em>, <strong><code>norm</code></strong>=<em><code>None</code></em>, <strong><code>strategy</code></strong>=<em><code>'zero'</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Simple Encoder/Decoder module</p>
 
 </div>
 
@@ -907,7 +939,7 @@ stage:  2
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">SimpleModel</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">StackUnstack</span><span class="p">(</span><span class="n">SimpleModel</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -941,7 +973,7 @@ stage:  2
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">imgs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_eq</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">)),</span> <span class="nb">len</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -962,6 +994,150 @@ stage:  2
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>torch.Size([2, 10, 1, 64, 64])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Loss">Loss<a class="anchor-link" href="#Loss"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As the model can output a list of tensors, we will need to modify the loss function to acomodate this inputs.</p>
+
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="StackLoss" class="doc_header"><code>StackLoss</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/conv_rnn.py#L205" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>StackLoss</code>(<strong><code>loss_func</code></strong>=<em><code>MSELoss()</code></em>, <strong><code>axis</code></strong>=<em><code>1</code></em>)</p>
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_func</span> <span class="o">=</span> <span class="n">StackLoss</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss_func</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">,</span> <span class="n">m</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6890, grad_fn=&lt;MeanBackward0&gt;)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 

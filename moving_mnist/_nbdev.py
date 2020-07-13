@@ -13,7 +13,9 @@ index = {"ROOT_PATH": "00_data.ipynb",
          "Encoder": "01_models.conv_rnn.ipynb",
          "UpsampleBlock": "01_models.conv_rnn.ipynb",
          "Decoder": "01_models.conv_rnn.ipynb",
-         "SimpleModel": "01_models.conv_rnn.ipynb"}
+         "StackUnstack": "01_models.conv_rnn.ipynb",
+         "SimpleModel": "01_models.conv_rnn.ipynb",
+         "StackLoss": "01_models.conv_rnn.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py"]

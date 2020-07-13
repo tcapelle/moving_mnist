@@ -15,6 +15,9 @@ entries:
     - output: web,pdf
       title: Recurrecnt Convolutional Kernels
       url: /models.conv_rnn
+    - output: web,pdf
+      title: Moving MNIST forecasting
+      url: /train_example
     output: web
     title: moving_mnist
   output: web
