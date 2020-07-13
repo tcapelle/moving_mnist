@@ -53,8 +53,9 @@ description: "A little experiment using Convolutional RNNs to forecast moving MN
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">())</span>
 </pre></div>
 
     </div>
@@ -66,12 +67,10 @@ description: "A little experiment using Convolutional RNNs to forecast moving MN
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;Quadro RTX 8000&#39;</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Quadro RTX 8000
+</pre>
 </div>
-
 </div>
 
 </div>

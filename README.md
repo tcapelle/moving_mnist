@@ -9,15 +9,12 @@ from moving_mnist.data import *
 ```
 
 ```python
-torch.cuda.set_device(0)
-torch.cuda.get_device_name()
+if torch.cuda.is_available():
+    torch.cuda.set_device(0)
+    print(torch.cuda.get_device_name())
 ```
 
-
-
-
-    'Quadro RTX 8000'
-
+    Quadro RTX 8000
 
 
 ## Install
