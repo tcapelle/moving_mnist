@@ -72,10 +72,11 @@ class TimeDistributed(Module):
 
     def low_mem_forward(self, x):
         "input x with shape:(bs,steps,channels,width,height)"
-        x_split = torch.split(x,1,dim=self.tdim)
-        out =[]
-        for i in range(len(x_split)):
-            out.append(self.module(x_split[i].squeeze(dim=self.tdim)))
+        tlen = x.shape[self.tdim]
+        x_split = torch.unbind(x, dim=self.tdim)
+        out = []
+        for i in range(tlen):
+            out.append(self.module(x_split[i]))
         return torch.stack(out,dim=self.tdim)
 
 # Cell
@@ -107,19 +108,21 @@ class Encoder(Module):
     def forward(self, inputs):
         "inputs.shape bs,seq_len,1,64,64"
         hidden_states = []
+        outputs = []
         for i, (conv, rnn) in enumerate(zip(self.convs, self.rnns)):
             if self.debug: print('stage: ',i)
             inputs, state_stage = self.forward_by_stage(inputs, conv, rnn)
+            outputs.append(inputs)
             hidden_states.append(state_stage)
-        return inputs, hidden_states
+        return outputs[-1], hidden_states
 
 # Cell
 class UpsampleBlock(Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
     @delegates(ConvLayer.__init__)
-    def __init__(self, in_ch, out_ch, final_div=True, blur=False, act_cls=defaults.activation,
-                 self_attention=False, init=nn.init.kaiming_normal_, norm_type=None, **kwargs):
-        store_attr(self, 'in_ch,out_ch,blur,act_cls,self_attention,norm_type')
+    def __init__(self, in_ch, out_ch, blur=False, act_cls=defaults.activation,
+                 self_attention=False, init=nn.init.kaiming_normal_, norm_type=None, debug=False, **kwargs):
+        store_attr(self, 'in_ch,out_ch,blur,act_cls,self_attention,norm_type,debug')
         self.shuf = PixelShuffle_ICNR(in_ch, in_ch//2, blur=blur, act_cls=act_cls, norm_type=norm_type)
         ni = in_ch//2
         nf = out_ch
@@ -132,6 +135,7 @@ class UpsampleBlock(Module):
                                 f'act={self.act_cls()}, attn={self.self_attention}, norm={self.norm_type})')
     def forward(self, up_in):
         up_out = self.shuf(up_in)
+        if self.debug: print(f'up_out: {up_out.shape}')
         return self.conv2(self.conv1(up_out))
 
 # Cell
@@ -166,11 +170,11 @@ class Decoder(Module):
         if self.debug: print(' after_deconvs: ', outputs_stage.shape)
         return outputs_stage, state_stage
 
-    def forward(self, inputs, hidden_states):
+    def forward(self, dec_input, hidden_states):
         for i, (state, conv, rnn) in enumerate(zip(hidden_states[::-1], self.deconvs, self.rnns)):
             if self.debug: print('stage: ',i)
-            inputs, state_stage = self.forward_by_stage(inputs, state, conv, rnn)
-        return self.head(inputs)
+            dec_input, state_stage = self.forward_by_stage(dec_input, state, conv, rnn)
+        return self.head(dec_input)
 
 # Cell
 class StackUnstack(Module):
@@ -198,7 +202,7 @@ class SimpleModel(Module):
         if self.strategy is 'zero':
             dec_in = one_param(self).new_zeros(*enc_out.shape)
         elif self.strategy is 'encoder':
-            dec_in = enc_out.detach()
+            dec_in = enc_out
         return self.decoder(dec_in, h)
 
 # Cell
