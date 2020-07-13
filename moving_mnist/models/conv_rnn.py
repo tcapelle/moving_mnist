@@ -59,10 +59,10 @@ class TimeDistributed(Module):
         self.low_mem = low_mem
         self.tdim = tdim
 
-    def forward(self, x):
-        "input x with shape:(bs,steps,channels,width,height)"
+    def forward(self, *args):
+        "input x with shape:(bs,seq_len,channels,width,height)"
         if self.low_mem or self.tdim!=1:
-            return self.low_mem_forward(x)
+            return self.low_mem_forward(*args)
         else:
             inp_shape = x.shape
             bs, seq_len = inp_shape[0], inp_shape[1]
@@ -70,13 +70,13 @@ class TimeDistributed(Module):
             out_shape = out.shape
             return out.view(bs, seq_len,*out_shape[1:])
 
-    def low_mem_forward(self, x):
-        "input x with shape:(bs,steps,channels,width,height)"
-        tlen = x.shape[self.tdim]
-        x_split = torch.unbind(x, dim=self.tdim)
+    def low_mem_forward(self, *args):
+        "input x with shape:(bs,seq_len,channels,width,height)"
+        tlen = args[0].shape[self.tdim]
+        args_split = [torch.unbind(x, dim=self.tdim) for x in args]
         out = []
         for i in range(tlen):
-            out.append(self.module(x_split[i]))
+            out.append(self.module(*[args[i] for args in args_split]))
         return torch.stack(out,dim=self.tdim)
 
 # Cell
@@ -210,5 +210,6 @@ def StackLoss(loss_func=MSELossFlat(), axis=1):
     def _inner_loss(x,y):
         x = torch.stack(x, axis)
         y = torch.stack(y, axis)
+        print(x.shape, y.shape)
         return loss_func(x,y)
     return _inner_loss
