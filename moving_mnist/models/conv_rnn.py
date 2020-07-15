@@ -140,7 +140,7 @@ class UpsampleBlock(Module):
 
 # Cell
 class Decoder(Module):
-    def __init__(self, n_out=1, szs=[64,32,16], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
+    def __init__(self, n_out=1, szs=[96,64,16], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
                  norm=None, debug=False):
         self.debug = debug
         deconvs = []
@@ -164,12 +164,13 @@ class Decoder(Module):
         if self.debug:
             print(' after rnn: ', inputs.shape)
             print(f' Layer: {deconv}')
-        print(f' before Upsample: {inputs.shape, side_in.shape}')
+            print(f' before Upsample: {inputs.shape, side_in.shape}')
         outputs_stage = deconv(inputs, side_in)
         if self.debug: print(' after_deconvs: ', outputs_stage.shape)
         return outputs_stage, state_stage
 
     def forward(self, dec_input, hidden_states, enc_outs):
+        enc_outs = [None]+enc_outs[:-1]
         for i, (state, conv, rnn, enc_out) in enumerate(zip(hidden_states[::-1], self.deconvs, self.rnns, enc_outs[::-1])):
             if self.debug: print(f'\nStage: {i} ---------------------------------')
             dec_input, state_stage = self.forward_by_stage(dec_input, state, conv, rnn, side_in=enc_out)
@@ -191,18 +192,18 @@ class StackUnstack(Module):
 # Cell
 class SimpleModel(Module):
     "Simple Encoder/Decoder module"
-    def __init__(self, n_in=1, n_out=1, szs=[16,64,96,96], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
+    def __init__(self, n_in=1, n_out=1, szs=[16,64,96], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
                  norm=None, strategy='zero', debug=False):
         self.strategy = strategy
         self.encoder = Encoder(n_in, szs, ks, rnn_ks, act, norm, debug)
-        self.decoder = Decoder(n_out, szs, ks, rnn_ks, act, blur, attn, norm, debug)
+        self.decoder = Decoder(n_out, szs[::-1], ks, rnn_ks, act, blur, attn, norm, debug)
     def forward(self, x):
-        enc_out, h = self.encoder(x)
+        enc_outs, h = self.encoder(x)
         if self.strategy is 'zero':
-            dec_in = one_param(self).new_zeros(*enc_out.shape)
+            dec_in = one_param(self).new_zeros(*enc_out[-1].shape)
         elif self.strategy is 'encoder':
-            dec_in = enc_out
-        return self.decoder(dec_in, h)
+            dec_in = enc_out[-1]
+        return self.decoder(dec_in, h, enc_outs)
 
 # Cell
 def StackLoss(loss_func=MSELossFlat(), axis=1):
