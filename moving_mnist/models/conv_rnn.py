@@ -15,15 +15,10 @@ class ConvGRU_cell(Module):
         self.out_ch = out_ch
         self.debug = debug
         self.padding = (ks - 1) // 2
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(self.in_ch + self.out_ch,
-                      2 * self.out_ch, self.ks, 1,
-                      self.padding),
-            nn.GroupNorm(2 * self.out_ch // 32, 2 * self.out_ch))
-        self.conv2 = nn.Sequential(
-            nn.Conv2d(self.in_ch + self.out_ch,
-                      self.out_ch, self.ks, 1, self.padding),
-            nn.GroupNorm(self.out_ch // 32, self.out_ch))
+        self.conv1 = nn.Sequential(nn.Conv2d(self.in_ch + self.out_ch,2 * self.out_ch, self.ks, 1,self.padding),
+                                   nn.GroupNorm(2 * self.out_ch // 8, 2 * self.out_ch))
+        self.conv2 = nn.Sequential(nn.Conv2d(self.in_ch + self.out_ch,self.out_ch, self.ks, 1, self.padding),
+                                   nn.GroupNorm(self.out_ch // 8, self.out_ch))
 
     def forward(self, inputs, hidden_state=None):
         "inputs shape: (bs, seq_len, ch, w, h)"
@@ -59,39 +54,39 @@ class TimeDistributed(Module):
         self.low_mem = low_mem
         self.tdim = tdim
 
-    def forward(self, *args):
+    def forward(self, *args, **kwargs):
         "input x with shape:(bs,seq_len,channels,width,height)"
         if self.low_mem or self.tdim!=1:
             return self.low_mem_forward(*args)
         else:
-            inp_shape = x.shape
+            #only support tdim=1
+            inp_shape = args[0].shape
             bs, seq_len = inp_shape[0], inp_shape[1]
-            out = self.module(x.view(bs*seq_len, *inp_shape[2:]))
+            out = self.module(*[x.view(bs*seq_len, *x.shape[2:]) for x in args], **kwargs)
             out_shape = out.shape
             return out.view(bs, seq_len,*out_shape[1:])
 
-    def low_mem_forward(self, *args):
+    def low_mem_forward(self, *args, **kwargs):
         "input x with shape:(bs,seq_len,channels,width,height)"
         tlen = args[0].shape[self.tdim]
         args_split = [torch.unbind(x, dim=self.tdim) for x in args]
         out = []
         for i in range(tlen):
-            out.append(self.module(*[args[i] for args in args_split]))
+            out.append(self.module(*[args[i] for args in args_split]), **kwargs)
         return torch.stack(out,dim=self.tdim)
+    def __repr__(self):
+        return f'TimeDistributed({self.module})'
 
 # Cell
 class Encoder(Module):
-    def __init__(self, n_in=1, szs=[16,64,96,96], ks=3, rnn_ks=5, act=nn.ReLU, norm=None, debug=False):
-        self.n_blocks = len(szs)-1
+    def __init__(self, n_in=1, szs=[16,64,96], ks=3, rnn_ks=5, act=nn.ReLU, norm=None, debug=False):
         self.debug = debug
         convs = []
         rnns = []
-        convs.append(ConvLayer(1, szs[0], ks=ks, padding=ks//2, act_cls=act, norm_type=norm))
-        rnns.append(ConvGRU_cell(szs[0], szs[1], ks=rnn_ks))
-        for ni, nf in zip(szs[1:-1], szs[2:]):
-            if self.debug: print(ni, nf)
-            convs.append(ConvLayer(ni, ni, ks=ks, stride=2, padding=ks//2, act_cls=act, norm_type=norm))
-            rnns.append(ConvGRU_cell(ni, nf, ks=rnn_ks))
+        szs = [n_in]+szs
+        for ni, nf in zip(szs[0:-1], szs[1:]):
+            convs.append(ConvLayer(ni, nf, ks=ks, stride=1 if ni==n_in else 2, padding=ks//2, act_cls=act, norm_type=norm))
+            rnns.append(ConvGRU_cell(nf, nf, ks=rnn_ks))
         self.convs = nn.ModuleList(TimeDistributed(conv) for conv in convs)
         self.rnns = nn.ModuleList(rnns)
 
@@ -114,51 +109,54 @@ class Encoder(Module):
             inputs, state_stage = self.forward_by_stage(inputs, conv, rnn)
             outputs.append(inputs)
             hidden_states.append(state_stage)
-        return outputs[-1], hidden_states
+        return outputs, hidden_states
 
 # Cell
 class UpsampleBlock(Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
     @delegates(ConvLayer.__init__)
-    def __init__(self, in_ch, out_ch, blur=False, act_cls=defaults.activation,
+    def __init__(self, in_ch, out_ch, residual=True, blur=False, act_cls=defaults.activation,
                  self_attention=False, init=nn.init.kaiming_normal_, norm_type=None, debug=False, **kwargs):
-        store_attr(self, 'in_ch,out_ch,blur,act_cls,self_attention,norm_type,debug')
+        store_attr(self, 'in_ch,out_ch,residual, blur,act_cls,self_attention,norm_type,debug')
         self.shuf = PixelShuffle_ICNR(in_ch, in_ch//2, blur=blur, act_cls=act_cls, norm_type=norm_type)
-        ni = in_ch//2
+        ni = in_ch//2 if not residual else in_ch//2 + out_ch  #the residual has out_ch (normally in_ch//2)
         nf = out_ch
         self.conv1 = ConvLayer(ni, nf, act_cls=act_cls, norm_type=norm_type, **kwargs)
         self.conv2 = ConvLayer(nf, nf, act_cls=act_cls, norm_type=norm_type,
                                xtra=SelfAttention(nf) if self_attention else None, **kwargs)
+        self.bn = nn.BatchNorm2d(out_ch)
         self.relu = act_cls()
         apply_init(nn.Sequential(self.conv1, self.conv2), init)
-    def __repr__(self): return (f'UpsampleBLock(in={self.in_ch}, out={self.out_ch}, blur={self.blur}, '
+    def __repr__(self): return (f'UpsampleBLock(in={self.in_ch}, out={self.out_ch}, blur={self.blur}, residual={self.residual}, '
                                 f'act={self.act_cls()}, attn={self.self_attention}, norm={self.norm_type})')
-    def forward(self, up_in):
+    def forward(self, up_in, side_in=None):
         up_out = self.shuf(up_in)
+        if side_in is not None:
+            if self.debug: print(f'up_out: {up_out.shape}, side_in: {side_in.shape}')
+            assert up_out.shape[-2:] == side_in.shape[-2::], 'residual shape does not match input'
+            up_out = torch.cat([up_out, self.bn(side_in)], dim=1)
         if self.debug: print(f'up_out: {up_out.shape}')
         return self.conv2(self.conv1(up_out))
 
 # Cell
 class Decoder(Module):
-    def __init__(self, n_out=1, szs=[16,64,96,96], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
+    def __init__(self, n_out=1, szs=[64,32,16], ks=3, rnn_ks=5, act=nn.ReLU, blur=False, attn=False,
                  norm=None, debug=False):
-        self.n_blocks = len(szs)-1
         self.debug = debug
         deconvs = []
         rnns = []
-        szs = szs[::-1]
-        rnns.append(ConvGRU_cell(szs[0], szs[0], ks=rnn_ks))
-        for ni, nf in zip(szs[0:-2], szs[1:]):
-            deconvs.append(UpsampleBlock(ni, ni, blur=blur, self_attention=attn, act_cls=act, norm_type=norm))
-            rnns.append(ConvGRU_cell(ni, nf, ks=rnn_ks))
+        szs = szs
+        for ni, nf in zip(szs[0:-1], szs[1:]):
+            deconvs.append(UpsampleBlock(ni, nf, blur=blur, self_attention=attn, act_cls=act, norm_type=norm))
+            rnns.append(ConvGRU_cell(ni, ni, ks=rnn_ks))
 
         #last layer
-        deconvs.append(ConvLayer(szs[-2], szs[-1], ks, padding=ks//2, act_cls=act, norm_type=norm))
-        self.head = TimeDistributed(nn.Conv2d(szs[-1], n_out,kernel_size=1))
+        deconvs.append(ConvLayer(szs[-1], szs[-1], ks, padding=ks//2, act_cls=act, norm_type=norm))
         self.deconvs = nn.ModuleList(TimeDistributed(conv) for conv in deconvs)
         self.rnns = nn.ModuleList(rnns)
+        self.head = TimeDistributed(nn.Conv2d(szs[-1], n_out, kernel_size=1))
 
-    def forward_by_stage(self, inputs, state, deconv, rnn):
+    def forward_by_stage(self, inputs, state, deconv, rnn, side_in=None):
         if self.debug:
             print(f' Layer: {rnn}')
             print(' inputs:, state: ', inputs.shape, state.shape)
@@ -166,14 +164,15 @@ class Decoder(Module):
         if self.debug:
             print(' after rnn: ', inputs.shape)
             print(f' Layer: {deconv}')
-        outputs_stage = deconv(inputs)
+        print(f' before Upsample: {inputs.shape, side_in.shape}')
+        outputs_stage = deconv(inputs, side_in)
         if self.debug: print(' after_deconvs: ', outputs_stage.shape)
         return outputs_stage, state_stage
 
-    def forward(self, dec_input, hidden_states):
-        for i, (state, conv, rnn) in enumerate(zip(hidden_states[::-1], self.deconvs, self.rnns)):
-            if self.debug: print('stage: ',i)
-            dec_input, state_stage = self.forward_by_stage(dec_input, state, conv, rnn)
+    def forward(self, dec_input, hidden_states, enc_outs):
+        for i, (state, conv, rnn, enc_out) in enumerate(zip(hidden_states[::-1], self.deconvs, self.rnns, enc_outs[::-1])):
+            if self.debug: print(f'\nStage: {i} ---------------------------------')
+            dec_input, state_stage = self.forward_by_stage(dec_input, state, conv, rnn, side_in=enc_out)
         return self.head(dec_input)
 
 # Cell
