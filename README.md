@@ -174,3 +174,4 @@ show_res(p,k)
 
 ## Training Example:
 - ConvGRU with attention and blur upsampling: [01_train_example.ipynb](01_train_example.ipynb)
+- ConvGRU trained with Cross Entropy instead of MSE: [02_train_cross_entropy.ipynb](02_train_cross_entropy.ipynb)

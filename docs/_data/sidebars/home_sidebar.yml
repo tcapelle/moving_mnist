@@ -13,7 +13,7 @@ entries:
       title: Data functionalities
       url: /data
     - output: web,pdf
-      title: Recurrecnt Convolutional Kernels
+      title: Recurrent Convolutional Kernels
       url: /models.conv_rnn
     output: web
     title: moving_mnist

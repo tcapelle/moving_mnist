@@ -2,6 +2,6 @@
   "moving_mnist": {
     "Overview": "/",
     "Data functionalities": "/data",
-    "Recurrecnt Convolutional Kernels": "/models.conv_rnn"
+    "Recurrent Convolutional Kernels": "/models.conv_rnn"
   }
 }
