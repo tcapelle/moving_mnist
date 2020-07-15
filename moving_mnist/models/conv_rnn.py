@@ -210,6 +210,5 @@ def StackLoss(loss_func=MSELossFlat(), axis=1):
     def _inner_loss(x,y):
         x = torch.stack(x, axis)
         y = torch.stack(y, axis)
-        print(x.shape, y.shape)
         return loss_func(x,y)
     return _inner_loss
