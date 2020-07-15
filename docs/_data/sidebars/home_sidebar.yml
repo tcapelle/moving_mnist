@@ -15,6 +15,9 @@ entries:
     - output: web,pdf
       title: Recurrent Convolutional Kernels
       url: /models.conv_rnn
+    - output: web,pdf
+      title: Transformer model
+      url: /models.transformer
     output: web
     title: moving_mnist
   output: web
