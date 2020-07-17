@@ -14,7 +14,8 @@ index = {"load_mnist": "00_data.ipynb",
          "StackUnstack": "01_models.conv_rnn.ipynb",
          "SimpleModel": "01_models.conv_rnn.ipynb",
          "StackLoss": "01_models.conv_rnn.ipynb",
-         "DETR": "02_models.transformer.ipynb"}
+         "DETR": "02_models.transformer.ipynb",
+         "detr_split": "02_models.transformer.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py",
