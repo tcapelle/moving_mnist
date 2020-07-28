@@ -6,6 +6,8 @@ index = {"load_mnist": "00_data.ipynb",
          "MovingMNIST": "00_data.ipynb",
          "ImageSeq": "00_data.ipynb",
          "ImageTupleTransform": "00_data.ipynb",
+         "AddCoords": "01_models.conv_rnn.ipynb",
+         "CoordConv": "01_models.conv_rnn.ipynb",
          "ConvGRU_cell": "01_models.conv_rnn.ipynb",
          "TimeDistributed": "01_models.conv_rnn.ipynb",
          "Encoder": "02_models.transformer.ipynb",
@@ -14,11 +16,16 @@ index = {"load_mnist": "00_data.ipynb",
          "StackUnstack": "01_models.conv_rnn.ipynb",
          "SimpleModel": "01_models.conv_rnn.ipynb",
          "StackLoss": "01_models.conv_rnn.ipynb",
+         "MultiImageDice": "01_models.conv_rnn.ipynb",
+         "DCN": "02_models.dcn.ipynb",
          "DETR": "02_models.transformer.ipynb",
-         "detr_split": "02_models.transformer.ipynb"}
+         "detr_split": "02_models.transformer.ipynb",
+         "TransformerTS": "02_models.transformer.ipynb",
+         "tf_split": "02_models.transformer.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py",
+           "models/dcn.py",
            "models/transformer.py"]
 
 doc_url = "https://tcapelle.github.io/moving_mnist/"
