@@ -43,14 +43,13 @@ class AddCoords(Module):
         return ret
 
 
+@delegates(nn.Conv2d)
 class CoordConv(Module):
 
-    def __init__(self, in_channels, out_channels, **kwargs):
+    def __init__(self, in_channels, out_channels, kernel_size=3, **kwargs):
         self.addcoords = AddCoords(with_r=True)
         in_size = in_channels+2
-        if with_r:
-            in_size += 1
-        self.conv = nn.Conv2d(in_size, out_channels, **kwargs)
+        self.conv = nn.Conv2d(in_size+1, out_channels, kernel_size, **kwargs)
 
     def forward(self, x):
         ret = self.addcoords(x)
@@ -135,7 +134,7 @@ class Encoder(Module):
         convs = []
         rnns = []
         if coord_conv:
-            self.coord_conv = TimeDistributed(CoordConv(n_in, 8, with_r=True, kernel_size=1))
+            self.coord_conv = TimeDistributed(CoordConv(n_in, 8, kernel_size=1))
             szs = [8]+szs
         else:
             self.coord_conv = Lambda(noop)

@@ -21,12 +21,20 @@ index = {"load_mnist": "00_data.ipynb",
          "DETR": "02_models.transformer.ipynb",
          "detr_split": "02_models.transformer.ipynb",
          "TransformerTS": "02_models.transformer.ipynb",
-         "tf_split": "02_models.transformer.ipynb"}
+         "tf_split": "02_models.transformer.ipynb",
+         "VGGBlock": "02_tcn.ipynb",
+         "VGG": "02_tcn.ipynb",
+         "Chomp1d": "02_tcn.ipynb",
+         "TemporalBlock3D": "02_tcn.ipynb",
+         "TemporalConvNet3D": "02_tcn.ipynb",
+         "TCN3D": "02_tcn.ipynb",
+         "SimpleTCN": "02_tcn.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py",
            "models/dcn.py",
-           "models/transformer.py"]
+           "models/transformer.py",
+           "models/tcn.py"]
 
 doc_url = "https://tcapelle.github.io/moving_mnist/"
 
