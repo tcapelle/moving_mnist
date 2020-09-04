@@ -3,7 +3,7 @@
 __all__ = ['DCN']
 
 # Cell
-from fastai2.vision.all import *
+from fastai.vision.all import *
 from .conv_rnn import *
 try:
     from mmcv.ops import *

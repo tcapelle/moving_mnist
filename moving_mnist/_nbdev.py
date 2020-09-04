@@ -10,11 +10,11 @@ index = {"load_mnist": "00_data.ipynb",
          "CoordConv": "01_models.conv_rnn.ipynb",
          "ConvGRU_cell": "01_models.conv_rnn.ipynb",
          "TimeDistributed": "01_models.conv_rnn.ipynb",
-         "Encoder": "02_models.transformer.ipynb",
+         "Encoder": "04_seq2seq.ipynb",
          "UpsampleBlock": "01_models.conv_rnn.ipynb",
-         "Decoder": "01_models.conv_rnn.ipynb",
-         "StackUnstack": "01_models.conv_rnn.ipynb",
-         "SimpleModel": "01_models.conv_rnn.ipynb",
+         "Decoder": "04_seq2seq.ipynb",
+         "StackUnstack": "04_seq2seq.ipynb",
+         "SimpleModel": "04_seq2seq.ipynb",
          "StackLoss": "01_models.conv_rnn.ipynb",
          "MultiImageDice": "01_models.conv_rnn.ipynb",
          "DCN": "02_models.dcn.ipynb",
@@ -28,13 +28,23 @@ index = {"load_mnist": "00_data.ipynb",
          "TemporalBlock3D": "02_tcn.ipynb",
          "TemporalConvNet3D": "02_tcn.ipynb",
          "TCN3D": "02_tcn.ipynb",
-         "SimpleTCN": "02_tcn.ipynb"}
+         "SimpleTCN": "02_tcn.ipynb",
+         "SimpleTCN2": "02_tcn.ipynb",
+         "ConvGRUCell": "04_seq2seq.ipynb",
+         "ConvGRU": "04_seq2seq.ipynb",
+         "dcgan_conv": "04_seq2seq.ipynb",
+         "dcgan_upconv": "04_seq2seq.ipynb",
+         "image_encoder": "04_seq2seq.ipynb",
+         "image_decoder": "04_seq2seq.ipynb",
+         "TeacherForcing": "04_seq2seq.ipynb"}
 
 modules = ["data.py",
            "models/conv_rnn.py",
            "models/dcn.py",
            "models/transformer.py",
-           "models/tcn.py"]
+           "models/tcn.py",
+           "models/phy.py",
+           "models/seq2seq.py"]
 
 doc_url = "https://tcapelle.github.io/moving_mnist/"
 

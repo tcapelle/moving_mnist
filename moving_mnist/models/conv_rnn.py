@@ -4,7 +4,7 @@ __all__ = ['AddCoords', 'CoordConv', 'ConvGRU_cell', 'TimeDistributed', 'Encoder
            'StackUnstack', 'SimpleModel', 'StackLoss', 'MultiImageDice']
 
 # Cell
-from fastai2.vision.all import *
+from fastai.vision.all import *
 
 # Cell
 class AddCoords(Module):
@@ -173,7 +173,7 @@ class UpsampleBlock(Module):
     @delegates(ConvLayer.__init__)
     def __init__(self, in_ch, out_ch, residual=True, blur=False, act_cls=defaults.activation,
                  self_attention=False, init=nn.init.kaiming_normal_, norm_type=None, debug=False, **kwargs):
-        store_attr(self, 'in_ch,out_ch,residual, blur,act_cls,self_attention,norm_type,debug')
+        store_attr()
         self.shuf = PixelShuffle_ICNR(in_ch, in_ch//2, blur=blur, act_cls=act_cls, norm_type=norm_type)
         ni = in_ch//2 if not residual else in_ch//2 + out_ch  #the residual has out_ch (normally in_ch//2)
         nf = out_ch

@@ -4,7 +4,7 @@ __all__ = ['load_mnist', 'MovingMNIST', 'ImageSeq', 'ImageTupleTransform']
 
 # Cell
 import gzip
-from fastai2.vision.all import *
+from fastai.vision.all import *
 
 # Cell
 def load_mnist(path):
@@ -117,7 +117,7 @@ class MovingMNIST:
         return self.length
 
 # Cell
-class ImageSeq(Tuple):
+class ImageSeq(fastuple):
     @classmethod
     def create(cls, t, cl_type=TensorImageBW):
         return cls(tuple(cl_type(im) for im in t))
