@@ -238,12 +238,12 @@ class StackUnstack(Module):
     def __init__(self, module, dim=1):
         self.dim = dim
         self.module = module
-    def forward(self, x):
-        if isinstance(x, list) or isinstance(x, tuple):
-            x = torch.stack(x, dim=self.dim)
-            x = self.module(x)
-            return x.unbind(dim=self.dim)
-        else: return self.module(x)
+    def forward(self, *args):
+        inputs = [torch.stack(x, dim=self.dim) for x in args]
+        outputs = self.module(*inputs)
+        if isinstance(outputs, (tuple, list)):
+            return [output.unbind(dim=self.dim) for output in outputs]
+        else: return outputs.unbind(dim=self.dim)
 
 # Cell
 class SimpleModel(Module):
