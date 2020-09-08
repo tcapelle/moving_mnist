@@ -296,7 +296,7 @@ class Seq2Seq(Module):
             new_img = self.img_decoder(dec_inp)
             if self.use_phy:
                 phy_inp, phy_h = self.phy(phy_inp, phy_h)
-#                 new_img = new_img + self.img_decoder(phy_inp)
+                new_img = new_img + self.img_decoder(phy_inp)
             outs.append(new_img)
             if self.debug: print('i out:',  outs[i].shape)
             if (targ is not None) and (random.random()<self.pr):
