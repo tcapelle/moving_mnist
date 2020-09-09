@@ -57,8 +57,8 @@ class PhyCell(Module):
         for cell, h in zip(self.cell_list, hidden):
             output_inner = []
             for inp in cur_layer_input:
-                hid = cell(inp, h)
-                output_inner.append(hid)
+                h = cell(inp, h)
+                output_inner.append(h)
             cur_layer_input = output_inner
             last_state_list.append(h)
 

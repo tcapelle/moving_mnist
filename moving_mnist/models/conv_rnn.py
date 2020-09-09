@@ -233,16 +233,27 @@ class Decoder(Module):
         return self.head(dec_input)
 
 # Cell
+def _unbind_images(x, dim=1):
+    "only unstack images"
+    if isinstance(x, torch.Tensor):
+        if len(x.shape)>=4:
+            return x.unbind(dim=dim)
+    return x
+
+# Cell
 class StackUnstack(Module):
     "Stack together inputs, apply module, unstack output"
     def __init__(self, module, dim=1):
         self.dim = dim
         self.module = module
+
+    @staticmethod
+    def unbind_images(x, dim=1): return _unbind_images(x, dim)
     def forward(self, *args):
         inputs = [torch.stack(x, dim=self.dim) for x in args]
         outputs = self.module(*inputs)
         if isinstance(outputs, (tuple, list)):
-            return [output.unbind(dim=self.dim) for output in outputs]
+            return [self.unbind_images(output, dim=self.dim) for output in outputs]
         else: return outputs.unbind(dim=self.dim)
 
 # Cell
