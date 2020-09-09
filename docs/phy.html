@@ -44,7 +44,7 @@ nb_path: "nbs/03_phy.ipynb"
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
-    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">set_device</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">())</span>
 </pre></div>
 
@@ -58,7 +58,7 @@ nb_path: "nbs/03_phy.ipynb"
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>GeForce RTX 2070 SUPER
+<pre>Quadro RTX 8000
 </pre>
 </div>
 </div>
@@ -71,44 +71,44 @@ nb_path: "nbs/03_phy.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Phycell">The Phycell<a class="anchor-link" href="#The-Phycell"> </a></h2>
+<h2 id="The-PhyCell">The PhyCell<a class="anchor-link" href="#The-PhyCell"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will refactor this to not make the hidden state as a class attribute. We can also make use of some fastai magic, like <code>one_param</code> (to be sure to be on the same device as the model params) and <code>store_attr()</code> to save our class attributes.
+<img src="/moving_mnist/images/phycell.png" alt="phycell"></p>
+
 </div>
 </div>
 </div>
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">PhyCell_Cell</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">ks</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="n">store_attr</span><span class="p">()</span>
-        <span class="n">padding</span> <span class="o">=</span> <span class="n">ks</span> <span class="o">//</span> <span class="mi">2</span>
-        <span class="n">bias</span> <span class="o">=</span> <span class="n">bias</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
-                 <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">),</span>   
-                 <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">ch_in</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
-                 <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+</div>
+    {% endraw %}
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">convgate</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ch_in</span><span class="p">,</span>
-                                  <span class="n">ch_in</span><span class="p">,</span>
-                                  <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span>
-                                  <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> 
-                                  <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span> 
-        <span class="s2">&quot;x ~[batch_size, hidden_dim, height, width]&quot;</span>  
-        <span class="n">hidden_tilde</span> <span class="o">=</span> <span class="n">hidden</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>         <span class="c1"># prediction</span>
-        <span class="n">combined</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">hidden_tilde</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># concatenate along channel axis</span>
-        <span class="n">combined_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convgate</span><span class="p">(</span><span class="n">combined</span><span class="p">)</span>
-        <span class="n">K</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">combined_conv</span><span class="p">)</span>
-        <span class="n">next_hidden</span> <span class="o">=</span> <span class="n">hidden_tilde</span> <span class="o">+</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">hidden_tilde</span><span class="p">)</span>   <span class="c1"># correction , Haddamard product     </span>
-        <span class="k">return</span> <span class="n">next_hidden</span>
-</pre></div>
+<div class="output_wrapper">
+<div class="output">
 
-    </div>
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PhyCell_Cell" class="doc_header"><code>class</code> <code>PhyCell_Cell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/phy.py#L9" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PhyCell_Cell</code>(<strong><code>ch_in</code></strong>, <strong><code>hidden_dim</code></strong>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -122,7 +122,7 @@ nb_path: "nbs/03_phy.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p_cell</span> <span class="o">=</span> <span class="n">PhyCell_Cell</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p_cell</span> <span class="o">=</span> <span class="n">PhyCell_Cell</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 <span class="n">p_cell</span>
 </pre></div>
 
@@ -140,7 +140,7 @@ nb_path: "nbs/03_phy.ipynb"
 <div class="output_text output_subarea output_execute_result">
 <pre>PhyCell_Cell(
   (f): Sequential(
-    (0): GroupNorm(4, 16, eps=1e-05, affine=True)
+    (0): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     (1): Conv2d(16, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
     (2): Conv2d(32, 16, kernel_size=(1, 1), stride=(1, 1))
   )
@@ -163,7 +163,8 @@ nb_path: "nbs/03_phy.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p_cell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">p_cell</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">())</span>
+<span class="n">out</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -178,7 +179,7 @@ nb_path: "nbs/03_phy.ipynb"
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([1, 16, 10, 10])</pre>
+<pre>torch.Size([64, 16, 12, 12])</pre>
 </div>
 
 </div>
@@ -196,71 +197,9 @@ nb_path: "nbs/03_phy.ipynb"
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">PhyCell</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ch_in</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">,</span> <span class="n">ks</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
-        <span class="n">store_attr</span><span class="p">()</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell_list</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PhyCell_Cell</span><span class="p">(</span><span class="n">ch_in</span><span class="o">=</span><span class="n">ch_in</span><span class="p">,</span>
-                                               <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                               <span class="n">ks</span><span class="o">=</span><span class="n">ks</span><span class="p">))</span>                                     
-       
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">first_timestep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> <span class="c1"># input_ [batch_size, 1, channels, width, height]    </span>
-        <span class="n">bs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ch</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="n">ch</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_in</span><span class="p">,</span> <span class="s2">&quot;Input tensor has different channels dim than Cell&quot;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">first_timestep</span><span class="p">):</span>   
-            <span class="bp">self</span><span class="o">.</span><span class="n">initHidden</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span> <span class="c1"># init Hidden at each forward start</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Create hidden: &#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_list</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="c1"># bottom layer</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-        
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> 
-    
-    <span class="k">def</span> <span class="nf">initHidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="p">[]</span> 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">one_param</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">new_zeros</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ch_in</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">setHidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">H</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phy</span> <span class="o">=</span> <span class="n">PhyCell</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="p">[</span><span class="mi">32</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phy</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mse_loss</span> <span class="o">=</span> <span class="n">MSELossFlat</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+<span class="n">loss</span>
 </pre></div>
 
     </div>
@@ -272,51 +211,231 @@ nb_path: "nbs/03_phy.ipynb"
 
 <div class="output_area">
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Create hidden:  torch.Size([8, 16, 12, 12])
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.0877, device=&#39;cuda:0&#39;, grad_fn=&lt;MseLossBackward&gt;)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
 
 <div class="output_area">
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">RuntimeError</span>                              Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-82-1eafbd5b862a&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>phy<span class="ansi-blue-fg">(</span>torch<span class="ansi-blue-fg">.</span>rand<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">8</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">16</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">12</span><span class="ansi-blue-fg">,</span><span class="ansi-cyan-fg">12</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> <span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-fg">~/miniconda3/envs/fastai/lib/python3.8/site-packages/torch/nn/modules/module.py</span> in <span class="ansi-cyan-fg">_call_impl</span><span class="ansi-blue-fg">(self, *input, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    720</span>             result <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_slow_forward<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>input<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    721</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 722</span><span class="ansi-red-fg">             </span>result <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>forward<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>input<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    723</span>         for hook in itertools.chain(
-<span class="ansi-green-intense-fg ansi-bold">    724</span>                 _global_forward_hooks<span class="ansi-blue-fg">.</span>values<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span>
 
-<span class="ansi-green-fg">&lt;ipython-input-79-e0c433569e83&gt;</span> in <span class="ansi-cyan-fg">forward</span><span class="ansi-blue-fg">(self, x, first_timestep)</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span>         <span class="ansi-green-fg">for</span> j<span class="ansi-blue-fg">,</span> cell <span class="ansi-green-fg">in</span> enumerate<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>cell_list<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span>             <span class="ansi-green-fg">if</span> j<span class="ansi-blue-fg">==</span><span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">:</span> <span class="ansi-red-fg"># bottom layer</span>
-<span class="ansi-green-fg">---&gt; 19</span><span class="ansi-red-fg">                 </span>self<span class="ansi-blue-fg">.</span>H<span class="ansi-blue-fg">[</span>j<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> cell<span class="ansi-blue-fg">(</span>x<span class="ansi-blue-fg">,</span> self<span class="ansi-blue-fg">.</span>H<span class="ansi-blue-fg">[</span>j<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     20</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">     21</span>                 self<span class="ansi-blue-fg">.</span>H<span class="ansi-blue-fg">[</span>j<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> cell<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>H<span class="ansi-blue-fg">[</span>j<span class="ansi-blue-fg">-</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span>self<span class="ansi-blue-fg">.</span>H<span class="ansi-blue-fg">[</span>j<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/miniconda3/envs/fastai/lib/python3.8/site-packages/torch/nn/modules/module.py</span> in <span class="ansi-cyan-fg">_call_impl</span><span class="ansi-blue-fg">(self, *input, **kwargs)</span>
-<span class="ansi-green-intense-fg ansi-bold">    720</span>             result <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_slow_forward<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>input<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    721</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 722</span><span class="ansi-red-fg">             </span>result <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>forward<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">*</span>input<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    723</span>         for hook in itertools.chain(
-<span class="ansi-green-intense-fg ansi-bold">    724</span>                 _global_forward_hooks<span class="ansi-blue-fg">.</span>values<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span>
-
-<span class="ansi-green-fg">&lt;ipython-input-36-9de6d1a23d18&gt;</span> in <span class="ansi-cyan-fg">forward</span><span class="ansi-blue-fg">(self, x, hidden)</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span>     <span class="ansi-green-fg">def</span> forward<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> x<span class="ansi-blue-fg">,</span> hidden<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span> <span class="ansi-red-fg"># x [batch_size, hidden_dim, height, width]</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span>         hidden_tilde <span class="ansi-blue-fg">=</span> hidden <span class="ansi-blue-fg">+</span> self<span class="ansi-blue-fg">.</span>f<span class="ansi-blue-fg">(</span>hidden<span class="ansi-blue-fg">)</span>        <span class="ansi-red-fg"># prediction</span>
-<span class="ansi-green-fg">---&gt; 19</span><span class="ansi-red-fg">         </span>combined <span class="ansi-blue-fg">=</span> torch<span class="ansi-blue-fg">.</span>cat<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span>x<span class="ansi-blue-fg">,</span> hidden_tilde<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> dim<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>  <span class="ansi-red-fg"># concatenate along channel axis</span>
-<span class="ansi-green-intense-fg ansi-bold">     20</span>         combined_conv <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>convgate<span class="ansi-blue-fg">(</span>combined<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     21</span>         K <span class="ansi-blue-fg">=</span> torch<span class="ansi-blue-fg">.</span>sigmoid<span class="ansi-blue-fg">(</span>combined_conv<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">RuntimeError</span>: Tensors must have same number of dimensions: got 5 and 4</pre>
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.0877, device=&#39;cuda:0&#39;, grad_fn=&lt;MseLossBackward&gt;)</pre>
 </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="PhyCell" class="doc_header"><code>class</code> <code>PhyCell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/phy.py#L40" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>PhyCell</code>(<strong><code>ch_in</code></strong>, <strong><code>hidden_dims</code></strong>, <strong><code>ks</code></strong>, <strong><code>n_layers</code></strong>) :: <code>Module</code></p>
+</blockquote>
+<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">phy</span> <span class="o">=</span> <span class="n">PhyCell</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">out</span><span class="p">,</span> <span class="n">states</span> <span class="o">=</span> <span class="n">phy</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">test_eq</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">...</span><span class="p">],</span> <span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">states</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([1, 2, 1, 6, 6]), torch.Size([1, 1, 1, 6, 6]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mse_loss</span> <span class="o">=</span> <span class="n">MSELossFlat</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+<span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6291, grad_fn=&lt;MseLossBackward&gt;)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>tensor(0.6291, grad_fn=&lt;MseLossBackward&gt;)</pre>
+</div>
+
 </div>
 
 </div>

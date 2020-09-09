@@ -107,7 +107,7 @@ nb_path: "nbs/04_seq2seq.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConvGRUCell" class="doc_header"><code>class</code> <code>ConvGRUCell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L12" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRUCell</code>(<strong><code>input_dim</code></strong>, <strong><code>hidden_dim</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>(3, 3)</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>activation</code></strong>=<em><code>tanh</code></em>, <strong><code>batchnorm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="ConvGRUCell" class="doc_header"><code>class</code> <code>ConvGRUCell</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L13" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRUCell</code>(<strong><code>input_dim</code></strong>, <strong><code>hidden_dim</code></strong>, <strong><code>kernel_size</code></strong>=<em><code>(3, 3)</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>activation</code></strong>=<em><code>tanh</code></em>, <strong><code>batchnorm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -196,7 +196,7 @@ nb_path: "nbs/04_seq2seq.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="ConvGRU" class="doc_header"><code>class</code> <code>ConvGRU</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L92" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRU</code>(<strong><code>input_dim</code></strong>, <strong><code>hidden_dim</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>activation</code></strong>=<em><code>tanh</code></em>, <strong><code>input_p</code></strong>=<em><code>0.2</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.1</code></em>, <strong><code>batchnorm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="ConvGRU" class="doc_header"><code>class</code> <code>ConvGRU</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L93" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>ConvGRU</code>(<strong><code>input_dim</code></strong>, <strong><code>hidden_dim</code></strong>, <strong><code>kernel_size</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>batch_first</code></strong>=<em><code>True</code></em>, <strong><code>bias</code></strong>=<em><code>True</code></em>, <strong><code>activation</code></strong>=<em><code>tanh</code></em>, <strong><code>input_p</code></strong>=<em><code>0.2</code></em>, <strong><code>hidden_p</code></strong>=<em><code>0.1</code></em>, <strong><code>batchnorm</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Base class for all neural network modules.</p>
 <p>Your models should also subclass this class.</p>
@@ -304,7 +304,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">layer_output</span><span class="o">.</span><span class="n">shape</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">layer_output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">last_state_list</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>
@@ -319,40 +319,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([8, 10, 32, 6, 6])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    {% endraw %}
-
-    {% raw %}
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">last_state_list</span><span class="o">.</span><span class="n">shape</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>torch.Size([2, 8, 32, 6, 6])</pre>
+<pre>(torch.Size([8, 10, 32, 6, 6]), torch.Size([2, 8, 32, 6, 6]))</pre>
 </div>
 
 </div>
@@ -404,9 +371,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="dcgan_conv" class="doc_header"><code>class</code> <code>dcgan_conv</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L196" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>dcgan_conv</code>(<strong><code>nin</code></strong>, <strong><code>nout</code></strong>, <strong><code>stride</code></strong>) :: <code>Module</code></p>
+<h2 id="dcgan_conv" class="doc_header"><code>class</code> <code>dcgan_conv</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L195" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>dcgan_conv</code>(<strong><code>nin</code></strong>, <strong><code>nout</code></strong>, <strong><code>stride</code></strong>) :: <code>Sequential</code></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -429,9 +415,28 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="dcgan_upconv" class="doc_header"><code>class</code> <code>dcgan_upconv</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L208" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>dcgan_upconv</code>(<strong><code>nin</code></strong>, <strong><code>nout</code></strong>, <strong><code>stride</code></strong>) :: <code>Module</code></p>
+<h2 id="dcgan_upconv" class="doc_header"><code>class</code> <code>dcgan_upconv</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L203" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>dcgan_upconv</code>(<strong><code>nin</code></strong>, <strong><code>nout</code></strong>, <strong><code>stride</code></strong>) :: <code>Sequential</code></p>
 </blockquote>
-<p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
+<p>A sequential container.
+Modules will be added to it in the order they are passed in the constructor.
+Alternatively, an ordered dict of modules can also be passed in.</p>
+<p>To make it easier to understand, here is a small example::</p>
+
+<pre><code># Example of using Sequential
+model = nn.Sequential(
+          nn.Conv2d(1,20,5),
+          nn.ReLU(),
+          nn.Conv2d(20,64,5),
+          nn.ReLU()
+        )
+
+# Example of using Sequential with OrderedDict
+model = nn.Sequential(OrderedDict([
+          ('conv1', nn.Conv2d(1,20,5)),
+          ('relu1', nn.ReLU()),
+          ('conv2', nn.Conv2d(20,64,5)),
+          ('relu2', nn.ReLU())
+        ]))</code></pre>
 
 </div>
 
@@ -535,7 +540,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="image_encoder" class="doc_header"><code>class</code> <code>image_encoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L224" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>image_encoder</code>(<strong><code>nc</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="image_encoder" class="doc_header"><code>class</code> <code>image_encoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L212" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>image_encoder</code>(<strong><code>nc</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -560,7 +565,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="image_decoder" class="doc_header"><code>class</code> <code>image_decoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L245" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>image_decoder</code>(<strong><code>nc</code></strong>=<em><code>1</code></em>) :: <code>Module</code></p>
+<h2 id="image_decoder" class="doc_header"><code>class</code> <code>image_decoder</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L233" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>image_decoder</code>(<strong><code>nc</code></strong>=<em><code>1</code></em>, <strong><code>nf</code></strong>=<em><code>16</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Same as <code>nn.Module</code>, but no need for subclasses to call <code>super().__init__</code></p>
 
@@ -683,7 +688,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Seq2Seq" class="doc_header"><code>class</code> <code>Seq2Seq</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L265" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Seq2Seq</code>(<strong><code>seq_len</code></strong>=<em><code>2</code></em>, <strong><code>ch_out</code></strong>=<em><code>1</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+<h2 id="Seq2Seq" class="doc_header"><code>class</code> <code>Seq2Seq</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L252" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Seq2Seq</code>(<strong><code>seq_len</code></strong>=<em><code>2</code></em>, <strong><code>ch_out</code></strong>=<em><code>1</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
 </blockquote>
 <p>Simple seq2seq model</p>
 
@@ -704,7 +709,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">StackUnstack</span><span class="p">(</span><span class="n">Seq2Seq</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">StackUnstack</span><span class="p">(</span><span class="n">Seq2Seq</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -721,7 +726,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">imgs_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">imgs_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
 </pre></div>
 
     </div>
@@ -754,7 +759,7 @@ parameters converted too when you call :meth:<code>to</code>, etc.</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>pr:  0.0
-enc_imgs shape torch.Size([2, 10, 64, 16, 16])
+enc_imgs shape torch.Size([2, 5, 64, 16, 16])
 initial out: torch.Size([2, 1, 1, 64, 64])
 i out: torch.Size([2, 1, 1, 64, 64])
 i out: torch.Size([2, 1, 1, 64, 64])
@@ -786,6 +791,41 @@ i out: torch.Size([2, 1, 1, 64, 64])
     {% raw %}
     
 <div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mse_loss</span> <span class="o">=</span> <span class="n">StackLoss</span><span class="p">(</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">out</span><span class="p">])</span> <span class="o">+</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">enc_imgs</span><span class="p">,</span> <span class="n">enc_targets</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
 
 </div>
     {% endraw %}
@@ -801,7 +841,161 @@ i out: torch.Size([2, 1, 1, 64, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Encoderloss" class="doc_header"><code>class</code> <code>Encoderloss</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L298" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Encoderloss</code>(<strong><code>enc_loss_func</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <code>Callback</code></p>
+<h2 id="Seq2SeqPhy" class="doc_header"><code>class</code> <code>Seq2SeqPhy</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L285" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Seq2SeqPhy</code>(<strong><code>seq_len</code></strong>=<em><code>2</code></em>, <strong><code>ch_out</code></strong>=<em><code>1</code></em>, <strong><code>ks</code></strong>=<em><code>3</code></em>, <strong><code>n_layers</code></strong>=<em><code>1</code></em>, <strong><code>debug</code></strong>=<em><code>False</code></em>) :: <code>Module</code></p>
+</blockquote>
+<p>Simple seq2seq model</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Full-integration">Full integration<a class="anchor-link" href="#Full-integration"> </a></h3>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m2</span> <span class="o">=</span> <span class="n">StackUnstack</span><span class="p">(</span><span class="n">Seq2SeqPhy</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+<span class="n">m2</span><span class="o">.</span><span class="n">module</span><span class="o">.</span><span class="n">pr</span><span class="o">=</span><span class="mf">1.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">imgs_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">img_targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span><span class="p">,</span> <span class="n">enc_imgs</span><span class="p">,</span> <span class="n">enc_targets</span> <span class="o">=</span> <span class="n">m2</span><span class="p">(</span><span class="n">imgs_list</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">enc_imgs</span><span class="p">)</span><span class="o">==</span><span class="nb">len</span><span class="p">(</span><span class="n">enc_targets</span><span class="p">)</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">enc_imgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">enc_targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(5,
+ torch.Size([2, 1, 64, 64]),
+ torch.Size([2, 1, 64, 64]),
+ torch.Size([2, 1, 64, 64]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mse_loss</span> <span class="o">=</span> <span class="n">StackLoss</span><span class="p">(</span><span class="n">MSELossFlat</span><span class="p">())</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">mse_loss</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">64</span><span class="p">)</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">out</span><span class="p">])</span> <span class="c1">#+ mse_loss(enc_imgs, enc_targets)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Encoder-Loss:">Encoder Loss:<a class="anchor-link" href="#Encoder-Loss:"> </a></h2>
+</div>
+</div>
+</div>
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h2 id="EncoderLoss" class="doc_header"><code>class</code> <code>EncoderLoss</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L329" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>EncoderLoss</code>(<strong><code>enc_loss_func</code></strong>, <strong><code>alpha</code></strong>=<em><code>0.5</code></em>) :: <code>Callback</code></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
 
@@ -839,7 +1033,7 @@ i out: torch.Size([2, 1, 1, 64, 64])
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TeacherForcing" class="doc_header"><code>class</code> <code>TeacherForcing</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L307" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TeacherForcing</code>(<strong><code>end_epoch</code></strong>) :: <code>Callback</code></p>
+<h2 id="TeacherForcing" class="doc_header"><code>class</code> <code>TeacherForcing</code><a href="https://github.com/tcapelle/moving_mnist/tree/master/moving_mnist/models/seq2seq.py#L338" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TeacherForcing</code>(<strong><code>end_epoch</code></strong>) :: <code>Callback</code></p>
 </blockquote>
 <p>Basic class handling tweaks of the training loop by changing a <code>Learner</code> in various events</p>
 

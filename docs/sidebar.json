@@ -1,8 +1,13 @@
 {
   "moving_mnist": {
     "Overview": "/",
-    "Data functionalities": "/data",
-    "Recurrent Convolutional Kernels": "/models.conv_rnn",
-    "Transformer model": "/models.transformer"
+    "Data functionalities": "data.html",
+    "Recurrent Convolutional Kernels": "models.conv_rnn.html",
+    "DCN": "models.dcn.html",
+    "Transformer model": "models.transformer.html",
+    "Temporal convnets": "tcn.html",
+    "PhyDNet": "phy.html",
+    "PhyDNet original implementation": "phy_original.html",
+    "Seq2Seq": "seq2seq.html"
   }
 }

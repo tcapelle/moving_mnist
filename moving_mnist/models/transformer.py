@@ -3,7 +3,7 @@
 __all__ = ['Encoder', 'DETR', 'detr_split', 'TransformerTS', 'tf_split']
 
 # Cell
-from fastai2.vision.all import *
+from fastai.vision.all import *
 from .conv_rnn import *
 
 # Cell
@@ -99,7 +99,10 @@ def detr_split(model, stacked=False):
                 params(model.module.conv)+params(model.module.transformer)+[model.module.query_pos]+[model.module.pos]+params(model.module.decoder)+params(model.module.lin)]
 
 # Cell
-from tst.transformer import Transformer
+try:
+    from tst.transformer import Transformer
+except:
+    Exception('Install tft plase from https://github.com/maxjcohen/transformer')
 
 # Cell
 class TransformerTS(Module):

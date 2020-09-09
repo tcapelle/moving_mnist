@@ -3,7 +3,7 @@
 
 
 ```python
-from fastai2.vision.all import *
+from fastai.vision.all import *
 from moving_mnist.models.conv_rnn import *
 from moving_mnist.data import *
 ```
@@ -19,7 +19,7 @@ if torch.cuda.is_available():
 
 ## Install
 
-It only uses fastai2 as dependency. Check how to install at https://github.com/fastai/fastai2
+It only uses fastai (version 2) as dependency. Check how to install at https://github.com/fastai/fastai2
 
 ## Example:
 
@@ -39,8 +39,7 @@ valid_tl = TfmdLists(range(100), ImageTupleTransform(ds))
 
 ```python
 dls = DataLoaders.from_dsets(train_tl, valid_tl, bs=8,
-                             after_batch=[Normalize.from_stats(imagenet_stats[0][0], 
-                                                               imagenet_stats[1][0])]).cuda()
+                             after_batch=[Normalize.from_stats(*mnist_stats)]).cuda()
 ```
 
 Left: Input, Right: Target
@@ -175,3 +174,5 @@ show_res(p,k)
 ## Training Example:
 - ConvGRU with attention and blur upsampling: [01_train_example.ipynb](01_train_example.ipynb)
 - ConvGRU trained with Cross Entropy instead of MSE: [02_train_cross_entropy.ipynb](02_train_cross_entropy.ipynb)
+- Seq2seq model trianed with MSE [03_trainseq2seq.ipynb](03_trainseq2seq.ipynb)
+- PhyDNet ported to fastai[04_train_phydnet.ipynb](04_train_phydnet.ipynb)

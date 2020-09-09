@@ -4,7 +4,7 @@ __all__ = ['VGGBlock', 'VGG', 'Chomp1d', 'TemporalBlock3D', 'TemporalConvNet3D',
 
 # Cell
 from torch.nn.utils import weight_norm
-from fastai2.vision.all import *
+from fastai.vision.all import *
 from .conv_rnn import *
 
 # Cell

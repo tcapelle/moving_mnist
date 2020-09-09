@@ -11,13 +11,28 @@ entries:
       url: /
     - output: web,pdf
       title: Data functionalities
-      url: /data
+      url: data.html
     - output: web,pdf
       title: Recurrent Convolutional Kernels
-      url: /models.conv_rnn
+      url: models.conv_rnn.html
+    - output: web,pdf
+      title: DCN
+      url: models.dcn.html
     - output: web,pdf
       title: Transformer model
-      url: /models.transformer
+      url: models.transformer.html
+    - output: web,pdf
+      title: Temporal convnets
+      url: tcn.html
+    - output: web,pdf
+      title: PhyDNet
+      url: phy.html
+    - output: web,pdf
+      title: PhyDNet original implementation
+      url: phy_original.html
+    - output: web,pdf
+      title: Seq2Seq
+      url: seq2seq.html
     output: web
     title: moving_mnist
   output: web
