@@ -439,7 +439,7 @@ def tensordot(a,b,dim):
 
 # Cell
 class PhyDNet(Module):
-    def __init__(self, encoder, criterion=MSELossFlat()):
+    def __init__(self, encoder, criterion=MSELossFlat(), sigmoid=False):
         store_attr()
         self.pr = 0
         self.k2m = K2M([7,7])
@@ -484,4 +484,5 @@ class PhyDNet(Module):
             m = self.k2m(filters.double())
             m  = m.float()
             loss += self.criterion(m, self.constraints.to(device)) # constrains is a precomputed matrix
-        return torch.stack(output_images, dim=1), loss
+        out_images = torch.stack(output_images, dim=1)
+        return torch.sigmoid(out_images) if self.sigmoid else out_images, loss
