@@ -274,7 +274,7 @@ class EncoderRNN(torch.nn.Module):
         out_conv = torch.sigmoid(self.image_cnn_dec([output2[-1],skip]))
 
         concat = output1[-1]+output2[-1]
-        output_image = torch.sigmoid( self.image_cnn_dec([concat,skip]) )
+        output_image =  self.image_cnn_dec([concat,skip])
         return out_phys, hidden1, output_image, out_phys, out_conv
 
 # Cell
@@ -484,4 +484,4 @@ class PhyDNet(Module):
             m = self.k2m(filters.double())
             m  = m.float()
             loss += self.criterion(m, self.constraints.to(device)) # constrains is a precomputed matrix
-        return torch.stack(output_images, dim=1), loss.item() / target_length
+        return torch.stack(output_images, dim=1), loss
