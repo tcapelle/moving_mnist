@@ -18,6 +18,7 @@ class PhyCell_Cell(nn.Module):
 
         self.F = nn.Sequential()
         self.F.add_module('bn1',nn.BatchNorm2d(input_dim))
+#         self.F.add_module('bn1',nn.GroupNorm(4, input_dim))
         self.F.add_module('conv1', nn.Conv2d(in_channels=input_dim, out_channels=F_hidden_dim, kernel_size=self.kernel_size, stride=(1,1), padding=self.padding))
         #self.F.add_module('f_act1', nn.LeakyReLU(negative_slope=0.1))
         self.F.add_module('conv2', nn.Conv2d(in_channels=F_hidden_dim, out_channels=input_dim, kernel_size=(1,1), stride=(1,1), padding=(0,0)))
@@ -259,23 +260,17 @@ class EncoderRNN(torch.nn.Module):
         self.phycell = phycell.to(device)
         self.convlstm = convlstm.to(device)
 
-
-    def forward(self, input, first_timestep=False, decoding=False):
-        if decoding:  # input=None in decoding phase
-            output_phys = None
-        else:
-            output_phys,skip = self.image_cnn_enc(input)
-        output_conv,skip = self.image_cnn_enc(input)
+    def forward(self, input, first_timestep=False):
+        output_phys, skip = self.image_cnn_enc(input)
+        output_conv = output_phys
 
         hidden1, output1 = self.phycell(output_phys, first_timestep)
         hidden2, output2 = self.convlstm(output_conv, first_timestep)
 
-        out_phys = torch.sigmoid(self.image_cnn_dec([output1[-1],skip])) # partial reconstructions for vizualization
-        out_conv = torch.sigmoid(self.image_cnn_dec([output2[-1],skip]))
+        concat = output1[-1] + output2[-1]
 
-        concat = output1[-1]+output2[-1]
         output_image =  self.image_cnn_dec([concat,skip])
-        return out_phys, hidden1, output_image, out_phys, out_conv
+        return output_image
 
 # Cell
 from numpy import *
@@ -455,28 +450,24 @@ class PhyDNet(Module):
 
         input_length  = input_tensor.size(1)
         target_length = target_tensor.size(1)
-        loss = 0
+        loss = 0.
         for ei in range(input_length-1):
-            encoder_output, encoder_hidden, output_image,_,_ = self.encoder(input_tensor[:,ei,:,:,:], (ei==0) )
-            loss += self.criterion(output_image,input_tensor[:,ei+1,:,:,:])
+            output_image = self.encoder(input_tensor[:,ei,:,:,:], (ei==0) )
+            loss += self.criterion(output_image, input_tensor[:,ei+1,:,:,:])
 
         decoder_input = input_tensor[:,-1,:,:,:] # first decoder input = last image of input sequence
 
         output_images = []
         if (target_tensor is not None) and (random.random()<self.pr):
             for di in range(target_length):
-                decoder_output, decoder_hidden, output_image,_,_ = self.encoder(decoder_input)
-                target = target_tensor[:,di,:,:,:]
-#                 loss += self.criterion(output_image,target)
+                output_image = self.encoder(decoder_input)
                 output_images.append(output_image)
-                decoder_input = target
+                decoder_input = target_tensor[:,di,:,:,:]
         else:
             for di in range(target_length):
-                decoder_output, decoder_hidden, output_image,_,_ = self.encoder(decoder_input)
+                output_image = self.encoder(decoder_input)
                 decoder_input = output_image
-                target = target_tensor[:,di,:,:,:]
                 output_images.append(output_image)
-#                 loss += self.criterion(output_image, target)
 
         # Moment Regularisation  encoder.phycell.cell_list[0].F.conv1.weight # size (nb_filters,in_channels,7,7)
         for b in range(0,self.encoder.phycell.cell_list[0].input_dim):
@@ -484,5 +475,8 @@ class PhyDNet(Module):
             m = self.k2m(filters.double())
             m  = m.float()
             loss += self.criterion(m, self.constraints.to(device)) # constrains is a precomputed matrix
+
         out_images = torch.stack(output_images, dim=1)
-        return torch.sigmoid(out_images) if self.sigmoid else out_images, loss
+        out_images = torch.sigmoid(out_images) if self.sigmoid else out_images
+
+        return out_images, loss
