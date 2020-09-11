@@ -7,9 +7,8 @@ __all__ = ['PhyCell_Cell', 'PhyCell', 'ConvLSTM_Cell', 'ConvLSTM', 'dcgan_conv',
 from fastai.vision.all import *
 
 # Cell
-class PhyCell_Cell(nn.Module):
-    def __init__(self, input_dim, F_hidden_dim, kernel_size, bias=1):
-        super(PhyCell_Cell, self).__init__()
+class PhyCell_Cell(Module):
+    def __init__(self, input_dim, F_hidden_dim, kernel_size, bias=True):
         self.input_dim  = input_dim
         self.F_hidden_dim = F_hidden_dim
         self.kernel_size = kernel_size
@@ -20,7 +19,7 @@ class PhyCell_Cell(nn.Module):
         self.F.add_module('bn1',nn.BatchNorm2d(input_dim))
 #         self.F.add_module('bn1',nn.GroupNorm(4, input_dim))
         self.F.add_module('conv1', nn.Conv2d(in_channels=input_dim, out_channels=F_hidden_dim, kernel_size=self.kernel_size, stride=(1,1), padding=self.padding))
-        #self.F.add_module('f_act1', nn.LeakyReLU(negative_slope=0.1))
+        self.F.add_module('f_act1', nn.LeakyReLU(negative_slope=0.1))
         self.F.add_module('conv2', nn.Conv2d(in_channels=F_hidden_dim, out_channels=input_dim, kernel_size=(1,1), stride=(1,1), padding=(0,0)))
 
         self.convgate = nn.Conv2d(in_channels=self.input_dim + self.input_dim,
@@ -39,16 +38,14 @@ class PhyCell_Cell(nn.Module):
         return next_hidden
 
 # Cell
-class PhyCell(nn.Module):
-    def __init__(self, input_shape, input_dim, F_hidden_dims, n_layers, kernel_size, device):
-        super(PhyCell, self).__init__()
+class PhyCell(Module):
+    def __init__(self, input_shape, input_dim, F_hidden_dims, n_layers, kernel_size):
         self.input_shape = input_shape
         self.input_dim = input_dim
         self.F_hidden_dims = F_hidden_dims
         self.n_layers = n_layers
         self.kernel_size = kernel_size
         self.H = []
-        self.device = device
 
         cell_list = []
         for i in range(0, self.n_layers):
@@ -63,7 +60,7 @@ class PhyCell(nn.Module):
     def forward(self, input_, first_timestep=False): # input_ [batch_size, 1, channels, width, height]
         batch_size = input_.data.size()[0]
         if (first_timestep):
-            self.initHidden(batch_size) # init Hidden at each forward start
+            self.initHidden(batch_size, dtype=input_.dtype) # init Hidden at each forward start
 
         for j,cell in enumerate(self.cell_list):
             if j==0: # bottom layer
@@ -73,14 +70,10 @@ class PhyCell(nn.Module):
 
         return self.H , self.H
 
-    def initHidden(self,batch_size):
+    def initHidden(self, batch_size, dtype):
         self.H = []
         for i in range(self.n_layers):
-            self.H.append( torch.zeros(batch_size, self.input_dim, self.input_shape[0], self.input_shape[1]).to(self.device) )
-
-    def setHidden(self, H):
-        self.H = H
-
+            self.H.append(one_param(self).new_zeros(batch_size, self.input_dim, self.input_shape[0], self.input_shape[1], dtype=dtype) )
 
 # Cell
 class ConvLSTM_Cell(nn.Module):
@@ -129,7 +122,7 @@ class ConvLSTM_Cell(nn.Module):
 
 # Cell
 class ConvLSTM(nn.Module):
-    def __init__(self, input_shape, input_dim, hidden_dims, n_layers, kernel_size,device):
+    def __init__(self, input_shape, input_dim, hidden_dims, n_layers, kernel_size):
         super(ConvLSTM, self).__init__()
         self.input_shape = input_shape
         self.input_dim = input_dim
@@ -137,7 +130,6 @@ class ConvLSTM(nn.Module):
         self.n_layers = n_layers
         self.kernel_size = kernel_size
         self.H, self.C = [],[]
-        self.device = device
 
         cell_list = []
         for i in range(0, self.n_layers):
@@ -166,8 +158,8 @@ class ConvLSTM(nn.Module):
     def initHidden(self,batch_size):
         self.H, self.C = [],[]
         for i in range(self.n_layers):
-            self.H.append( torch.zeros(batch_size,self.hidden_dims[i], self.input_shape[0], self.input_shape[1]).to(self.device) )
-            self.C.append( torch.zeros(batch_size,self.hidden_dims[i], self.input_shape[0], self.input_shape[1]).to(self.device) )
+            self.H.append( one_param(self).new_zeros(batch_size,self.hidden_dims[i], self.input_shape[0], self.input_shape[1]) )
+            self.C.append( one_param(self).new_zeros(batch_size,self.hidden_dims[i], self.input_shape[0], self.input_shape[1]) )
 
     def setHidden(self, hidden):
         H,C = hidden
@@ -252,20 +244,19 @@ class image_decoder(nn.Module):
 
 # Cell
 class EncoderRNN(torch.nn.Module):
-    def __init__(self,phycell,convlstm, device):
+    def __init__(self,phycell,convlstm, ):
         super(EncoderRNN, self).__init__()
-        self.image_cnn_enc = image_encoder().to(device) # image encoder 64x64x1 -> 16x16x64
-        self.image_cnn_dec = image_decoder().to(device) # image decoder 16x16x64 -> 64x64x1
+        self.image_cnn_enc = image_encoder() # image encoder 64x64x1 -> 16x16x64
+        self.image_cnn_dec = image_decoder() # image decoder 16x16x64 -> 64x64x1
 
-        self.phycell = phycell.to(device)
-        self.convlstm = convlstm.to(device)
+        self.phycell = phycell
+        self.convlstm = convlstm
 
     def forward(self, input, first_timestep=False):
-        output_phys, skip = self.image_cnn_enc(input)
-        output_conv = output_phys
+        encoded_image, skip = self.image_cnn_enc(input)
 
-        hidden1, output1 = self.phycell(output_phys, first_timestep)
-        hidden2, output2 = self.convlstm(output_conv, first_timestep)
+        hidden1, output1 = self.phycell(encoded_image, first_timestep)
+        hidden2, output2 = self.convlstm(encoded_image, first_timestep)
 
         concat = output1[-1] + output2[-1]
 
@@ -434,7 +425,7 @@ def tensordot(a,b,dim):
 
 # Cell
 class PhyDNet(Module):
-    def __init__(self, encoder, criterion=MSELossFlat(), sigmoid=False):
+    def __init__(self, encoder, criterion=MSELossFlat(), sigmoid=False, moment=True):
         store_attr()
         self.pr = 0
         self.k2m = K2M([7,7])
@@ -470,11 +461,12 @@ class PhyDNet(Module):
                 output_images.append(output_image)
 
         # Moment Regularisation  encoder.phycell.cell_list[0].F.conv1.weight # size (nb_filters,in_channels,7,7)
-        for b in range(0,self.encoder.phycell.cell_list[0].input_dim):
-            filters = self.encoder.phycell.cell_list[0].F.conv1.weight[:,b,:,:] # (nb_filters,7,7)
-            m = self.k2m(filters.double())
-            m  = m.float()
-            loss += self.criterion(m, self.constraints.to(device)) # constrains is a precomputed matrix
+        if self.moment:
+            for b in range(0,self.encoder.phycell.cell_list[0].input_dim):
+                filters = self.encoder.phycell.cell_list[0].F.conv1.weight[:,b,:,:] # (nb_filters,7,7)
+                m = self.k2m(filters.double())
+                m  = m.float()
+                loss += self.criterion(m, self.constraints.to(device)) # constrains is a precomputed matrix
 
         out_images = torch.stack(output_images, dim=1)
         out_images = torch.sigmoid(out_images) if self.sigmoid else out_images
